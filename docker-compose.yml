@@ -16,6 +16,7 @@ services:
     networks:
       - db
     restart: unless-stopped
+  # Not really needed for this project, bit I'm leaving it here in case you need to poke around the db
   db_manager:
     container_name: db_manager
     image: dpage/pgadmin4
@@ -25,7 +26,8 @@ services:
     volumes:
       - ./db/db_manager:/root/.pgadmin
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - "5050:80"
+      # - "${PGADMIN_PORT:-5050}:8000"
     depends_on:
       - db
     networks:

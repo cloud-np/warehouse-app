@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "docker:build": "docker-compose -p pern_stack build",
-    "docker:up": "docker-compose -p pern_stack up",
+    "docker:up": "docker-compose -p pern_stack up --force-recreate",
     "docker:down": "docker-compose -p pern_stack down",
     "docker:down:volumes": "docker-compose -p pern_stack down --volumes"
   },
