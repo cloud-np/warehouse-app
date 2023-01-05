@@ -4,9 +4,14 @@
 -- And also to reset the database to its initial state.
 -------------------------------------------------------------------
 
-CREATE USER me;
+-------------------------------------------------------------------
+-- These commands should never run in production. This is just 
+-- for development purposes and because we use docker
+-- so we can reset the state of the application entirely.
+CREATE USER common_user WITH PASSWORD 'common_password';
 CREATE DATABASE api;
-GRANT ALL PRIVILEGES ON DATABASE api TO me;
+GRANT ALL PRIVILEGES ON DATABASE api TO common_user;
+-------------------------------------------------------------------
 
 -- Use the api database
 \c api
