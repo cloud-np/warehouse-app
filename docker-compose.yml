@@ -38,6 +38,8 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile.dev # on move to prod, update this
+    # The volumes are creating issues with the container, so I'm disabling them for now.
+    # I'll come back to this later.
     volumes:
       - /api/node_modules
       - ./api:/api
@@ -54,7 +56,6 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.dev # on move to prod, update this
-    # The volumes are creating issues with the container, so I'm disabling them for now
     # volumes:
     #   - /app/node_modules
     #   - ./app:/app
