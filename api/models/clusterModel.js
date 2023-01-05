@@ -8,15 +8,12 @@
 //         this.postcode = postcode;
 //     }
 // }
-const models = require('./models');
-const { client } = require('../db/dbConn');
-const { CreateModel } = models(client);
+const { createModel } = require('./models');
 
-
-const Cluster = CreateModel({
-    id: 1, 
-    cname: "A", 
-    postcode: "10",
+const Cluster = createModel("cluster", {
+    id: Number, 
+    cname: String, 
+    postcode: String,
 });
 
 module.exports = Cluster;

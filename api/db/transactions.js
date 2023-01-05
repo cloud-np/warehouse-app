@@ -1,13 +1,15 @@
-const withTransaction = async (callback) => {
+const withTransaction = async (pool, callback) => {
     try {
-      await client.query('BEGIN');
+      await pool.query('BEGIN');
       const res = await callback();
-      await client.query('COMMIT');
+      await pool.query('COMMIT');
       return res;
     } catch (err) {
-      await client.query('ROLLBACK');
+      await pool.query('ROLLBACK');
       throw err;
     }
 };
 
-module.exports = withTransaction;
+module.exports = {
+  withTransaction: withTransaction,
+};

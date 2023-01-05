@@ -1,10 +1,8 @@
-const { Client } = require('pg')
-
-let client = null;
+const { Pool } = require('pg')
 
 const connectDB = async () => {
     try {
-        client = new Client({
+        const pool = new Pool({
             user: process.env.PG_USER || 'test_user',
             host: process.env.PG_HOST || 'localhost',
             database: process.env.PG_DATABASE || 'test_db',
@@ -12,14 +10,14 @@ const connectDB = async () => {
             port: parseInt(process.env.PG_PORT, 10) || 5432,
         });
 
-        client.connect((err) => {
+        pool.connect((err) => {
             if (err) {
                 console.error('Connection error', err.stack);
                 process.exit(1);
             }
         });
         console.log('Connected to PostgreSQL server.')
-        return client;
+        return pool;
     } catch (error) {
         console.log(error);
         process.exit(1);
@@ -27,6 +25,5 @@ const connectDB = async () => {
 }
 
 module.exports = {
-    client,
-    connectDB
+    pool: connectDB(),
 }
