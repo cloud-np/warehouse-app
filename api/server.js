@@ -3,10 +3,13 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const clusterRoutes = require("./routes/clusterRoutes");
 const { errorHandler } = require('./middleware/errorMiddleware');
 const path = require("path");
-
 dotenv.config({ path: "./.env.example" });
+const { connectDB } = require('./db/dbConn');
+connectDB();
+
 const app = express();
 app.use(express.json());
 // For security
@@ -17,6 +20,7 @@ app.use(cors());
 app.use(morgan("common"));
 
 /* ROUTES */
+app.use("/api/clusters", clusterRoutes);
 // app.use("/auth", authRoutes);
 // app.use("/users", userRoutes);
 // app.use("/posts", postRoutes);
@@ -39,13 +43,3 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-const Cluster = require('./models/clusterModel');
-// console.log(Cluster);
-
-const clust = new Cluster(1, "Cluster 1", "12345")
-// .findById(1).then((res) => console.log(res));
-
-console.log("cluster obj: ", clust);
-console.log("Cluster class: ", Cluster);
-Cluster.findAll().then((res) => console.log(res));
