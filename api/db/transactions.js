@@ -1,10 +1,10 @@
 const { getPool } = require('./dbConn');
 
-const withTransaction = async (callback) => {
+const withTransaction = async (query) => {
   const pool = getPool();
   try {
     await pool.query('BEGIN');
-    const res = await callback();
+    const res = await pool.query(query);
     await pool.query('COMMIT');
     return res;
   } catch (err) {
@@ -13,6 +13,16 @@ const withTransaction = async (callback) => {
   }
 };
 
+const withoutTransaction = async (query) => {
+  const pool = getPool();
+  try {
+    return await pool.query(query);;
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports = {
   withTransaction: withTransaction,
+  withoutTransaction: withoutTransaction,
 };

@@ -3,7 +3,7 @@ const { createModel } = require('./models');
 const Cluster = createModel("clusters", {
     id: Number, 
     cname: String, 
-    postcode: String,
+    ccode: String,
 });
 
 module.exports = Cluster;

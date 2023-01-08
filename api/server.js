@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const clusterRoutes = require("./routes/clusterRoutes");
+const driverRoutes = require("./routes/driverRoutes");
+const packageRoutes = require("./routes/packageRoutes");
 const { errorHandler } = require('./middleware/errorMiddleware');
 const path = require("path");
 dotenv.config({ path: "./.env.example" });
@@ -21,9 +23,8 @@ app.use(morgan("common"));
 
 /* ROUTES */
 app.use("/api/clusters", clusterRoutes);
-// app.use("/auth", authRoutes);
-// app.use("/users", userRoutes);
-// app.use("/posts", postRoutes);
+app.use("/api/drivers", driverRoutes);
+app.use("/api/packages", packageRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 3000;
