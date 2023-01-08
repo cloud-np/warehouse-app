@@ -10,7 +10,7 @@ const getDrivers = asyncHandler(async (req, res) => {
     res.status(200).json(drivers);
 });
 
-// @desc    Set driver
+// @desc    Create driver
 // @route   POST /api/drivers
 // @access  Private
 const createDriver = asyncHandler(async (req, res) => {
@@ -22,25 +22,21 @@ const createDriver = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Update driver
-// @route   PUT /api/drivers/:id
+// @desc    Get the driver's status
+// @route   PUT /api/drivers/driver-status/:id
 // @access  Private
-const updateDriver = asyncHandler(async (req, res) => {
+const getDriverStatus = asyncHandler(async (req, res) => {
     const driver = await Driver.findById(req.params.id)
 
     if (!driver) {
-        res.status(400)
-        throw new Error('driver not found')
+        res.status(400).json({ message: 'Driver could not be found.' });
     }
 
-    const updatedDriver = await Driver.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-    })
-
-    res.status(200).json(updatedDriver)
+    res.status(200).json({ is_ready: driver.is_ready })
 });
 
 module.exports = {
     getDrivers,
-    createDriver
+    // createDriver,
+    getDriverStatus,
 }
