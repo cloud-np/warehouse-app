@@ -4,6 +4,7 @@ import { serverAxios } from '../api/axiosInstance';
 
 const Form = styled.form`
 
+/* background-color: #31313190; */
 padding: 2rem;
 flex-direction: column;
 align-items: center;
@@ -20,38 +21,37 @@ button {
 }
 `
 
-const AddPackage = () => {
+const AddCluster = ({ reFetchClusters }) => {
     // package is reserved word in strict mode.
-    const [myPackage, setMyPackage] = useState({});
+    const [cluster, setCluster] = useState({});
 
     const handleSubmit = async (e) => {
         // To prevent page refresh.
         e.preventDefault();
-        const res = await serverAxios.post('/packages', myPackage).catch((err) => {
+        const res = await serverAxios.post('/clusters', cluster).catch((err) => {
             if (err.response.status === 400) {
                 alert(err.response.data.message);
             }
         });
 
         if (res?.status === 200){
-            if(alert('Package added successfully! If it is not showing up, it means it does not belong to a cluster.')){}
-            else    window.location.reload(); 
-        }
+            alert('Cluster added successfully!');
+            reFetchClusters();
+        } 
     }
 
     const handleOnChange = (e) => {
-        // console.log(e.target.value);
-        setMyPackage({ ...myPackage, [e.target.name]: e.target.value })
+        setCluster({ ...cluster, [e.target.name]: e.target.value })
     }
 
     return (
         <Form onSubmit={handleSubmit}>
-            <h2>Add Package to warehouse</h2>
-            <input onChange={handleOnChange} placeholder='Voucher' name='voucher' id='voucher' />
-            <input onChange={handleOnChange} placeholder='Postcode' name='postcode' id='postcode' />
+            <h2>Add a Cluster to warehouse</h2>
+            <input onChange={handleOnChange} placeholder='Cluster Name' name='cname' id='cname' />
+            <input onChange={handleOnChange} placeholder='Cluster Code' name='ccode' id='ccode' />
             <button>Submit</button>
         </Form>
     )
 }
 
-export default AddPackage
+export default AddCluster

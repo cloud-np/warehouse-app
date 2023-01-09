@@ -20,38 +20,33 @@ button {
 }
 `
 
-const AddPackage = () => {
+const AddDriver = ({ clusterID }) => {
     // package is reserved word in strict mode.
-    const [myPackage, setMyPackage] = useState({});
+    const [driver, setDriver] = useState({});
 
     const handleSubmit = async (e) => {
         // To prevent page refresh.
         e.preventDefault();
-        const res = await serverAxios.post('/packages', myPackage).catch((err) => {
+        const res = await serverAxios.post('/drivers', {...driver, cluster_id: clusterID}).catch((err) => {
             if (err.response.status === 400) {
                 alert(err.response.data.message);
             }
         });
 
-        if (res?.status === 200){
-            if(alert('Package added successfully! If it is not showing up, it means it does not belong to a cluster.')){}
-            else    window.location.reload(); 
-        }
+        if (res?.status === 200) alert('Driver added successfully.');
     }
 
     const handleOnChange = (e) => {
-        // console.log(e.target.value);
-        setMyPackage({ ...myPackage, [e.target.name]: e.target.value })
+        setDriver({ ...driver, [e.target.name]: e.target.value })
     }
 
     return (
         <Form onSubmit={handleSubmit}>
-            <h2>Add Package to warehouse</h2>
-            <input onChange={handleOnChange} placeholder='Voucher' name='voucher' id='voucher' />
-            <input onChange={handleOnChange} placeholder='Postcode' name='postcode' id='postcode' />
+            <h2>Add Driver to Cluster</h2>
+            <input onChange={handleOnChange} placeholder='Driver Name' name='dname' id='dname' />
             <button>Submit</button>
         </Form>
     )
 }
 
-export default AddPackage
+export default AddDriver

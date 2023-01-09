@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { serverAxios } from '../api/axiosInstance';
 
 const Container = styled.div`
 display: flex;
@@ -13,24 +12,15 @@ button {
 }
 `
 
-const ShowClusters = ({ setSelectedCluster }) => {
-    const [clusters, setClusters] = useState([]);
-
-    useEffect(() => {
-        const fetchClusters = async () => {
-            const res = await serverAxios.get('/clusters');
-            setClusters(res.data);
-        };
-        fetchClusters();
-    }, []);
+const ShowClusters = ({ givenClusters, setSelectedCluster }) => {
 
     return (
         <Container>
-            <p>Click a cluster to reveal the packges it contains. (click again to hide them.)</p>
+            <p>View packages by Cluster. Click a cluster to reveal the packges it contains. (click again to hide them.)</p>
             <div>
-                {clusters.map((cluster) =>
+                {givenClusters.map((cluster) =>
                     // This is just for demonstration reasons..
-                    <button onClick={() => setSelectedCluster(cluster.id)}>
+                    <button key={cluster.id} onClick={() => setSelectedCluster(cluster.id)}>
                         <h4>{cluster.cname}</h4>
                         <h2>{cluster.ccode}</h2>
                     </button>

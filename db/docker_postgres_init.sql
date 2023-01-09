@@ -163,3 +163,7 @@ COMMIT;
 BEGIN;
     INSERT INTO package (voucher, postcode) VALUES ('I9I', '16800');
 COMMIT;
+
+----------------------------------------------------------------------------
+-- Cursor-based pagination to retrieve the packages since they can be many.
+-- Declare the function to get the packages

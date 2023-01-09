@@ -6,9 +6,11 @@ const Container = styled.div`
 display: flex;
 justify-content: center;
 align-items: center;
+flex-direction: column;
 
 table {
     border-collapse: collapse;
+    margin: .8rem;
     tr{
         border: 1px solid black;
     }
@@ -31,34 +33,28 @@ table {
         color: #c80000;
     }
 }
+    .pagination{
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+    }
 
 `
 
-const ShowPackages = ({ clusterID }) => {
+const ShowAllPackages = () => {
     const [packages, setPackages] = useState([]);
-    const [clusterDrivers, setClusterDrivers] = useState([]);
-    const [deliveryInfo, setDeliveryInfo] = useState({});
+    const [pageNum, setPageNum] = useState(1);
 
     useEffect(() => {
         const fetchPackages = async () => {
-            const res = await serverAxios.get(`/packages/${clusterID}`);
+            const res = await serverAxios.get(`/packages/${pageNum}`);
             setPackages(res.data);
         }
-        const fetchClusterDrivers = async () => {
-            const res = await serverAxios.get(`/drivers/${clusterID}`);
-            setClusterDrivers(res.data);
-        }
-        fetchClusterDrivers();
         fetchPackages();
-    }, [clusterID]);
+    }, [pageNum]);
 
-    const simulateDriverPickUp = async () => {
-        if (deliveryInfo.driver_id === '') {
-            alert('Please select a driver');
-            return;
-        }
-        deliveryInfo.driver_id = parseInt(deliveryInfo.driver_id);
-        const res = await serverAxios.put(`/packages/package-picked-by-driver`, { ...deliveryInfo }).catch((err) => {
+    const simulateDriverPickUp = async (package_id) => {
+        const res = await serverAxios.put(`/packages/package-picked-by-driver`, { package_id }).catch((err) => {
             if (err.response.status === 400) {
                 alert(err.response.data.message);
             }
@@ -67,6 +63,10 @@ const ShowPackages = ({ clusterID }) => {
             if(alert('Simulated driver pick up successfully!')){}
             else window.location.reload();
         }
+    }
+    const previousPage = () => {
+        if (pageNum < 0) setPageNum(0)
+        else             setPageNum(pageNum - 1)
     }
 
     return (
@@ -90,18 +90,18 @@ const ShowPackages = ({ clusterID }) => {
 
                             <td className={p.scanned_at ? "scanned" : "notScanned"}>{p.scanned_at ? new Date(p.scanned_at).toLocaleString() : "Not scanned yet"}</td>
                             <td>
-                                <select onChange={(e) => setDeliveryInfo({driver_id: e.target.value, package_id: p.id})}>
-                                    <option default value={''}>Select Driver</option>
-                                    {clusterDrivers.map((d) => <option key={d.id} value={d.id}>{d.dname}</option>)}
-                                </select>
-                                <button onClick={simulateDriverPickUp}> Simulate driver pick up</button>
+                                <button onClick={(p) => simulateDriverPickUp(p.id)}>Simulate driver pick up</button>
                             </td>
                         </tr>
                     )}
                 </tbody>
             </table>
+            <div className='pagination'>
+                <button onClick={previousPage}>Previous page</button>
+                <button onClick={() => setPageNum(pageNum + 1)}>Next page</button>
+            </div>
         </Container>
     )
 }
 
-export default ShowPackages
+export default ShowAllPackages
