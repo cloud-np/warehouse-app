@@ -24,7 +24,7 @@ class BaseModel {
         let excludedKeys = ['id'];
         Object.keys(objColumns).forEach(key => {
             if (typeof objColumns[key] === 'object' && objColumns[key] !== null) {
-                if(objColumns[key]['default'] !== undefined){
+                if(objColumns[key]['autoCreated'] !== undefined || objColumns[key]['default'] !== undefined){
                     this[key] = objColumns[key]['default'];
                     excludedKeys.push(key);
                 }
@@ -78,7 +78,7 @@ const createModel = (tableName, tableColumns) => {
         }
 
         static async findByColumn(column, val) {
-            const res = await withoutTransaction(`SELECT * FROM ${tableName} WHERE ${column} = ${val}`);
+            const res = await withoutTransaction(`SELECT * FROM ${tableName} WHERE ${column} = ${val ? `'${val}'` : val}`);
             return res.rows;
         }
 

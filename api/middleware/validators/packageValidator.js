@@ -1,8 +1,12 @@
-const { validateBodyVars } = require("../../utils/dataCheck");
+const { validateBodyVars, validatePostcode } = require("../../utils/dataCheck");
 
 const validatePackageCreate = (req, res, next) => {
-    if (!validateBodyVars({voucher: req.body['voucher'], postcode: req.body['postcode'], cluster_id: req.body['cluster_id']})){
-        res.status(400).send({ message: 'Please provide correct information to create scan a Package.' });
+    if (!validateBodyVars({voucher: req.body['voucher'], postcode: req.body['postcode']})){
+        res.status(400).send({ message: 'Please provide correct information to create a Package.' });
+        return;
+    }
+    if (!validatePostcode(req.body['postcode'])) {
+        res.status(400).send({ message: 'The provided Postcode Code is not correct.' });
         return;
     }
     next();
@@ -18,4 +22,5 @@ const validatePackagePickedByDriver = (req, res, next) => {
 module.exports = {
     validatePackageCreate,
     validatePackagePickedByDriver,
+
 };
