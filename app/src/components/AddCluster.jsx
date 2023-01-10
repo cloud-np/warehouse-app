@@ -4,7 +4,6 @@ import { serverAxios } from '../api/axiosInstance';
 
 const Form = styled.form`
 
-/* background-color: #31313190; */
 padding: 2rem;
 flex-direction: column;
 align-items: center;

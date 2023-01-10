@@ -1,4 +1,4 @@
-const { validateBodyVars, validatePostcode, isVarWithValue } = require("../../utils/dataCheck");
+const { validateBodyVars, validatePostcode } = require("../../utils/dataCheck");
 
 const validatePackageCreate = (req, res, next) => {
     if (!validateBodyVars({voucher: req.body['voucher'], postcode: req.body['postcode']})){
@@ -11,7 +11,6 @@ const validatePackageCreate = (req, res, next) => {
 }
 
 const validatePackagePickedByDriver = (req, res, next) => {
-    console.log(req.body)
     if (!validateBodyVars({package_id: req.body['package_id']})){
         return res.status(400).send({ message: 'Please provide correct information to for a Driver to pick up the Package.' });
     }

@@ -1,13 +1,16 @@
 const errorHandler = (err, req, res, next) => {
-    const statusCode = res.statusCode ? res.statusCode : 500;
-
-    res.status(statusCode);
-    res.json({
-        message: err.message,
-        // Hide the stack trace in production
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    const errStatus = err.statusCode || 500;
+    const errMsg = err.message || 'Something went wrong';
+    const errName = err.name || 'Error';
+    res.status(errStatus).json({
+        success: false,
+        status: errStatus,
+        errorName: errName,
+        message: errMsg,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : {}
     })
 }
+
 
 module.exports = {
     errorHandler,

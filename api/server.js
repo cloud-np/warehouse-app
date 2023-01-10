@@ -47,7 +47,9 @@ app.all('*', (req, res) => {
   }
 });
 
+// Error handler at the end of the middleware chain.
 app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

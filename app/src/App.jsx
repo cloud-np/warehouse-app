@@ -11,15 +11,13 @@ import ShowAllPackages from './components/ShowAllPackages';
 import ResetButton from './components/ResetButton';
 
 const Container = styled.div`
-
   .adders {
     display: flex;
+    justify-content: center;
   }
 `
 
 function App() {
-  const [clusterDriver, setClusterDriver] = useState(null);
-  const [drivers, setDrivers] = useState(null);
   const [clusters, setClusters] = useState([]);
 
   const fetchClusters = async () => {
@@ -28,25 +26,20 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchDrivers = async () => {
-      const res = await serverAxios.get(`/drivers/`).catch(err => alert(err));
-      setDrivers(res.data)
-    };
-    fetchDrivers();
     fetchClusters();
   }, []);
 
   return (
     <Container className="App">
-      <h1>Warehouse App</h1>
-      <ResetButton />
-      <div className="card">
-        <ShowAllPackages />
-        <ShowClusters givenClusters={clusters} />
-        <div className='adders'>
-          <AddCluster reFetchClusters={fetchClusters} />
+        <h1>Warehouse App</h1>
+        <ResetButton />
+        <div className="card">
+          <ShowAllPackages />
+          <ShowClusters givenClusters={clusters} />
+          <div className='adders'>
+            <AddCluster reFetchClusters={fetchClusters} />
+          </div>
         </div>
-      </div>
     </Container>
   )
 }
