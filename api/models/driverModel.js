@@ -1,4 +1,4 @@
-const { withoutTransaction, withTransaction } = require('../db/transactions');
+const { withTransaction } = require('../db/transactions');
 const { createModel } = require('./models');
 
 const Driver = createModel("driver", {

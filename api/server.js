@@ -1,16 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+dotenv.config({ path: "./.env.example" });
 const helmet = require("helmet");
 const morgan = require("morgan");
 const clusterRoutes = require("./routes/clusterRoutes");
 const driverRoutes = require("./routes/driverRoutes");
 const packageRoutes = require("./routes/packageRoutes");
-const { databaseReset } = require('./db/databaseReset');
 const asyncHandler = require('express-async-handler');
 const { errorHandler } = require('./middleware/errorMiddleware');
+const { databaseReset } = require('./db/databaseReset');
 const path = require("path");
-dotenv.config({ path: "./.env.example" });
 const { connectDB } = require('./db/dbConn');
 connectDB();
 
