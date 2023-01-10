@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { serverAxios } from '../api/axiosInstance';
 import AddDriver from './AddDriver';
 
 const Container = styled.div`
@@ -33,33 +32,29 @@ table {
 }
 `
 
-const ShowDrivers = ({ clusterID }) => {
-    const [drivers, setDrivers] = useState([]);
-
-    useEffect(() => {
-        const fetchDrivers = async () => {
-            const res = await serverAxios.get(`/drivers/${clusterID}`);
-            setDrivers(res.data);
-        }
-        fetchDrivers();
-    }, [clusterID]);
-
+const ShowDrivers = ({ drivers, clusterID = null }) => {
     return (
         <Container>
             <div>
                 <table>
-                    <tr>
-                        <th>Cluster Drivers</th>
-                        <th>Status</th>
-                    </tr>
-                    {drivers.map((driver) =>
-                        <tr key={driver.id}>
-                            <td>{driver.dname}</td>
-                            <td className={driver.is_ready ? "ready" : "notReady"}>{driver.is_ready ? "Ready" : "Not Ready"}</td>
+                    <tbody>
+                        <tr>
+                            <th>Drivers</th>
+                            <th>Cluster</th>
+                            <th>Status</th>
+                            <th>Packages left</th>
                         </tr>
-                    )}
+                        {drivers.map((driver, index) =>
+                            <tr key={index}>
+                                <td>{driver.dname}</td>
+                                <td>{driver.cname}</td>
+                                <td className={driver.is_ready ? "ready" : "notReady"}>{driver.is_ready ? "Ready" : "Not Ready"}</td>
+                                <td>{driver.packages_left}</td>
+                            </tr>
+                        )}
+                    </tbody>
                 </table>
-                {drivers.length === 0 && <AddDriver clusterID={clusterID} />}
+                {drivers.length === 0 && clusterID && <AddDriver clusterID={clusterID} />}
             </div>
         </Container>
     )

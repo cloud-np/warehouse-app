@@ -4,8 +4,8 @@ const { getPackagesByCluster, packagePickedByDriver, createPackage, getPackages 
 const { validatePackageCreate, validatePackagePickedByDriver } = require("../middleware/validators/packageValidator");
 
 router.get("/:pageNum", getPackages);
+router.get("/by-cluster/:cluster_id", getPackagesByCluster);
 router.post("/", validatePackageCreate, createPackage);
-router.get("/:cluster_id", getPackagesByCluster);
 router.put("/package-picked-by-driver", validatePackagePickedByDriver, packagePickedByDriver);
 
 module.exports = router;

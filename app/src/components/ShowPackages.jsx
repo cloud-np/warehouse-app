@@ -24,7 +24,6 @@ table {
         border: none;
     }
     .scanned {
-        /* background-color: #1b1b1b; */
         color: #00c83c;
     }
     .notScanned {
@@ -40,22 +39,18 @@ const ShowPackages = ({ clusterID }) => {
     const [deliveryInfo, setDeliveryInfo] = useState({});
 
     useEffect(() => {
-        const fetchPackages = async () => {
-            const res = await serverAxios.get(`/packages/${clusterID}`);
-            setPackages(res.data);
+        const fetchData = async () => {
+            const resPackages = await serverAxios.get(`/packages/by-cluster/${clusterID}`);
+            setPackages(resPackages.data);
+            const resDrivers = await serverAxios.get(`/drivers/${clusterID}`);
+            setClusterDrivers(resDrivers.data);
         }
-        const fetchClusterDrivers = async () => {
-            const res = await serverAxios.get(`/drivers/${clusterID}`);
-            setClusterDrivers(res.data);
-        }
-        fetchClusterDrivers();
-        fetchPackages();
+        fetchData();
     }, [clusterID]);
 
     const simulateDriverPickUp = async () => {
         if (deliveryInfo.driver_id === '') {
-            alert('Please select a driver');
-            return;
+            return alert('Please select a driver');
         }
         deliveryInfo.driver_id = parseInt(deliveryInfo.driver_id);
         const res = await serverAxios.put(`/packages/package-picked-by-driver`, { ...deliveryInfo }).catch((err) => {
@@ -92,7 +87,7 @@ const ShowPackages = ({ clusterID }) => {
                             <td>
                                 <select onChange={(e) => setDeliveryInfo({driver_id: e.target.value, package_id: p.id})}>
                                     <option default value={''}>Select Driver</option>
-                                    {clusterDrivers.map((d) => <option key={d.id} value={d.id}>{d.dname}</option>)}
+                                    {clusterDrivers.map((d, index) => <option key={index} value={d.id}>{d.dname}</option>)}
                                 </select>
                                 <button onClick={simulateDriverPickUp}> Simulate driver pick up</button>
                             </td>

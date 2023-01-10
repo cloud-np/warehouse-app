@@ -11,6 +11,7 @@ const validatePackageCreate = (req, res, next) => {
 }
 
 const validatePackagePickedByDriver = (req, res, next) => {
+    console.log(req.body)
     if (!validateBodyVars({package_id: req.body['package_id']})){
         return res.status(400).send({ message: 'Please provide correct information to for a Driver to pick up the Package.' });
     }

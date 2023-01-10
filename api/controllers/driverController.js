@@ -7,20 +7,22 @@ const Driver = require('../models/driverModel')
 // @route   GET /api/drivers
 // @access  Private
 const getDrivers = asyncHandler(async (req, res) => {
-    const drivers = await Driver.findAll();
-    res.status(200).json(drivers);
+    const drivers = await Driver.findAllWithPackagesLeft();
+    res.status(200).json(drivers.rows);
 });
 
 // @desc    Get drivers by Cluster
 // @route   GET /api/drivers
 // @access  Private
 const getDriversByCluster = asyncHandler(async (req, res) => {
-    const drivers = await Driver.findByColumn("cluster_id", req.params.cluster_id);
-    if (!drivers) {
-        return res.status(400).json({ message: 'Cluster or drivers not found.' });
-    }
-    return res.status(200).json(drivers);
+    let drivers = await Driver.findByColumn("cluster_id", req.params.cluster_id);
+
+    if (drivers.length === 0) return res.status(200).json(drivers);
+
+    drivers = await Driver.findClusterDriverWithPackagesLeft(req.params.cluster_id);
+    return res.status(200).json(drivers.rows);
 });
+
 
 // @desc    Create driver
 // @route   POST /api/drivers

@@ -26,9 +26,7 @@ const getPackagesByCluster = asyncHandler(async (req, res) => {
     if (!cluster) {
         return res.status(400).json({ message: 'Cluster not found.' });
     }
-    
     const packages = await Package.getPackagesByCluster(req.params.cluster_id);
-
     return res.status(200).json(packages.rows);
 });
 
@@ -50,6 +48,14 @@ const createPackage = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Voucher already exist for package.' });
     }
 
+    // If we the postcode does not corrispond to an 
+    // existing cluster, then do not create the package. 
+    const ccode = req.body.postcode.substring(0, 2);
+    const cluster = await Cluster.findByColumn("ccode", ccode);
+    if (cluster.length === 0){
+        return res.status(400).json({ message: `There is no Cluster with code: ${ccode}` });
+    }
+
     const package = await new Package({ ...req.body }).saveToDB();
     if (!package) {
         return res.status(400).json({ message: 'Package could not be created.' });
@@ -63,11 +69,16 @@ const createPackage = asyncHandler(async (req, res) => {
 const packagePickedByDriver = asyncHandler(async (req, res) => {
     const package = await Package.findById(req.body.package_id)
     let driver = null;
+
     // If driver_id is not provided, then we will pick the driver based on the cluster_id
     // Since there is only one driver in each cluster. Later on if we have more than one drivers
     // this should be reworked. But the assignment assumes one driver per cluster for now.
-    if (!req.body.driver_id) driver = await Driver.findByColumn("cluster_id", package.cluster_id)[0]
-    else                     driver = await Driver.findById(req.body.driver_id)
+    if (!req.body.driver_id){
+        driver = await Driver.findByColumn("cluster_id", package.cluster_id);
+        driver = driver[0];
+    }else{
+        driver = await Driver.findById(req.body.driver_id);
+    }
 
     if (!driver)                                  return res.status(400).json({ message: 'Driver not found' });
     if (!package)                                 return res.status(400).json({ message: 'Package not found' });

@@ -20,7 +20,7 @@ button {
 }
 `
 
-const AddDriver = ({ clusterID }) => {
+const AddDriver = ({ clusterID, reFetchDrivers }) => {
     // package is reserved word in strict mode.
     const [driver, setDriver] = useState({});
 
@@ -33,7 +33,10 @@ const AddDriver = ({ clusterID }) => {
             }
         });
 
-        if (res?.status === 200) alert('Driver added successfully.');
+        if (res?.status === 200){
+            if (alert('Driver added successfully.')){}
+            else window.location.reload();
+        } 
     }
 
     const handleOnChange = (e) => {

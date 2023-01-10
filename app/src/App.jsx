@@ -17,7 +17,8 @@ const Container = styled.div`
 `
 
 function App() {
-  const [clusterID, setClusterID] = useState(null);
+  const [clusterDriver, setClusterDriver] = useState(null);
+  const [drivers, setDrivers] = useState(null);
   const [clusters, setClusters] = useState([]);
 
   const fetchClusters = async () => {
@@ -26,28 +27,22 @@ function App() {
   };
 
   useEffect(() => {
+    const fetchDrivers = async () => {
+      const res = await serverAxios.get(`/drivers/`).catch(err => alert(err));
+      setDrivers(res.data)
+    };
+    fetchDrivers();
     fetchClusters();
   }, []);
-
-  const handleClickedCluster = (cluster_id) => {
-    if (cluster_id === clusterID) {
-      setClusterID(null);
-      return;
-    }
-    setClusterID(cluster_id);
-  }
 
   return (
     <Container className="App">
       <h1>Warehouse App</h1>
       <div className="card">
         <ShowAllPackages />
-        {clusterID && <ShowPackages clusterID={clusterID} />}
-        {clusterID && <ShowDrivers clusterID={clusterID} />}
-        <ShowClusters givenClusters={clusters} setSelectedCluster={handleClickedCluster} />
+        <ShowClusters givenClusters={clusters} />
         <div className='adders'>
-          <AddPackage />
-          <AddCluster  reFetchClusters={fetchClusters} />
+          <AddCluster reFetchClusters={fetchClusters} />
         </div>
       </div>
     </Container>

@@ -28,7 +28,7 @@ CREATE TABLE clusters(
     -- We could use a char() here since we propably don't excpect many cluster? Also I highly doubt 
     -- that it will make any significant difference in performance and memory usage. So I will just
     -- use text for now instead of adding an additional check if the cluster section field has a specific length in the backend/frontend.
-    cname TEXT NOT NULL,
+    cname TEXT UNIQUE NOT NULL,
     -- We use text data type instead of a numeric because are not supposed to use 
     -- aritmetic on them and there may be a case where we have leading zeros.
     -- Here also we assume that each cluster is given a unique postcode.
@@ -54,7 +54,7 @@ CREATE TABLE package(
     postcode TEXT NOT NULL,
     cluster_id INTEGER REFERENCES clusters(id) ON DELETE CASCADE,
     -- This should be NULL on perpose. If case a package is not assigned to a driver yet.
-    driver_id INTEGER REFERENCES driver(id) ON DELETE CASCADE,
+    driver_id INTEGER DEFAULT NULL REFERENCES driver(id) ON DELETE CASCADE,
     scanned_at TIMESTAMP(0) WITHOUT TIME ZONE
 );
 
@@ -96,16 +96,20 @@ EXECUTE PROCEDURE update_driver_packages_left();
 -- Its safer/better to update the driver status in a trigger instead of the backend.
 CREATE OR REPLACE FUNCTION update_driver_and_package_on_insert()
 RETURNS TRIGGER AS $$
+DECLARE cluster_id_based_on_postcode int;
 BEGIN
-  -- When a new package is assigned to a cluster, set the driver's is_ready status to false
-  UPDATE driver SET is_ready = FALSE WHERE cluster_id = NEW.cluster_id;
 
-  -- This triggers the other trigger. I should put a constrain here to run
-  -- the query and then remove it. But since we are inserting one package at the time
-  -- there would not be a significant problem. Later on this should get reworked.
+    SELECT id INTO cluster_id_based_on_postcode FROM clusters WHERE ccode = LEFT(NEW.postcode, 2);
+
+    -- This triggers the other trigger. I should put a constrain here to run
+    -- the query and then remove it. But since we are inserting one package at the time
+    -- there would not be a significant problem. Later on this should get reworked.
     UPDATE package p
-    SET cluster_id = (SELECT id FROM clusters WHERE ccode = LEFT(NEW.postcode, 2))
+    SET cluster_id = cluster_id_based_on_postcode
     WHERE p.id = NEW.id;
+
+    -- When a new package is assigned to a cluster, set the driver's is_ready status to false
+    UPDATE driver SET is_ready = FALSE WHERE cluster_id = cluster_id_based_on_postcode;
 
   RETURN NEW;
 END;

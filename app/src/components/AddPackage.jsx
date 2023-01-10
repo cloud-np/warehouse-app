@@ -20,7 +20,7 @@ button {
 }
 `
 
-const AddPackage = () => {
+const AddPackage = ({ reFetchPackages, reFetchDrivers }) => {
     // package is reserved word in strict mode.
     const [myPackage, setMyPackage] = useState({});
 
@@ -34,13 +34,13 @@ const AddPackage = () => {
         });
 
         if (res?.status === 200){
-            if(alert('Package added successfully! If it is not showing up, it means it does not belong to a cluster.')){}
-            else    window.location.reload(); 
+            alert('Package added successfully!');
+            reFetchPackages();
+            reFetchDrivers();
         }
     }
 
     const handleOnChange = (e) => {
-        // console.log(e.target.value);
         setMyPackage({ ...myPackage, [e.target.name]: e.target.value })
     }
 

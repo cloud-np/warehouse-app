@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { serverAxios } from '../api/axiosInstance'
+import AddPackage from './AddPackage'
+import ShowDrivers from './ShowDrivers'
 
 const Container = styled.div`
 display: flex;
@@ -43,15 +45,26 @@ table {
 
 const ShowAllPackages = () => {
     const [packages, setPackages] = useState([]);
-    const [pageNum, setPageNum] = useState(1);
+    const [pageNum, setPageNum] = useState(0);
+    const [drivers, setDrivers] = useState([]);
+
+    const fetchPackages = async () => {
+        const res = await serverAxios.get(`/packages/${pageNum}`);
+        setPackages(res.data);
+    }
 
     useEffect(() => {
-        const fetchPackages = async () => {
-            const res = await serverAxios.get(`/packages/${pageNum}`);
-            setPackages(res.data);
-        }
         fetchPackages();
     }, [pageNum]);
+
+    const fetchDrivers = async () => {
+        const res = await serverAxios.get(`/drivers`).catch(err => alert(err));
+        setDrivers(res.data);
+    }
+
+    useEffect(() => {
+        fetchDrivers();
+    }, [])
 
     const simulateDriverPickUp = async (package_id) => {
         const res = await serverAxios.put(`/packages/package-picked-by-driver`, { package_id }).catch((err) => {
@@ -71,8 +84,10 @@ const ShowAllPackages = () => {
 
     return (
         <Container>
+
+            <ShowDrivers drivers={drivers} />
             <table>
-                <tbody>
+                <thead>
                     <tr>
                         <th>Voucher</th>
                         <th>Post Code</th>
@@ -81,18 +96,24 @@ const ShowAllPackages = () => {
                         <th>Scanned At</th>
                         <th>Select driver</th>
                     </tr>
-                    {packages.map((p) =>
-                        <tr key={p.id}>
-                            <td>{p.voucher}</td>
-                            <td>{p.postcode}</td>
-                            <td>{p.cluster_name}</td>
-                            <td>{p.driver_name}</td>
+                </thead>
+                <tbody>
+                    {packages.map((p) => {
 
-                            <td className={p.scanned_at ? "scanned" : "notScanned"}>{p.scanned_at ? new Date(p.scanned_at).toLocaleString() : "Not scanned yet"}</td>
-                            <td>
-                                <button onClick={(p) => simulateDriverPickUp(p.id)}>Simulate driver pick up</button>
-                            </td>
-                        </tr>
+                        return (
+                            <tr key={p.id}>
+                                <td>{p.voucher}</td>
+                                <td>{p.postcode}</td>
+                                <td>{p.cluster_name}</td>
+                                <td>{p.driver_name}</td>
+
+                                <td className={p.scanned_at ? "scanned" : "notScanned"}>{p.scanned_at ? new Date(p.scanned_at).toLocaleString() : "Not scanned yet"}</td>
+                                <td>
+                                    <button onClick={() => simulateDriverPickUp(p.id)}>Simulate driver pick up</button>
+                                </td>
+                            </tr>
+                        )
+                    }
                     )}
                 </tbody>
             </table>
@@ -100,6 +121,7 @@ const ShowAllPackages = () => {
                 <button onClick={previousPage}>Previous page</button>
                 <button onClick={() => setPageNum(pageNum + 1)}>Next page</button>
             </div>
+            <AddPackage reFetchDrivers={fetchDrivers} reFetchPackages={fetchPackages} />
         </Container>
     )
 }
