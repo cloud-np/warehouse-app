@@ -19,7 +19,7 @@ GRANT ALL PRIVILEGES ON DATABASE api TO common_user;
 -- Drop all tables if they exist
 DROP TABLE IF EXISTS package;
 DROP TABLE IF EXISTS driver;
-DROP TABLE IF EXISTS cluster;
+DROP TABLE IF EXISTS clusters;
 
 -------------------------------------------------------------------
 -- Create the tables

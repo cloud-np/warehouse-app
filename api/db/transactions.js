@@ -11,7 +11,7 @@ const withTransaction = async (query) => {
     await pool.query('ROLLBACK');
     throw err;
   }
-};
+}
 
 const withoutTransaction = async (query) => {
   const pool = getPool();
@@ -20,9 +20,9 @@ const withoutTransaction = async (query) => {
   } catch (err) {
     throw err;
   }
-};
+}
 
 module.exports = {
-  withTransaction: withTransaction,
-  withoutTransaction: withoutTransaction,
+  withTransaction,
+  withoutTransaction,
 };

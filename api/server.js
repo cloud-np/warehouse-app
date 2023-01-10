@@ -6,6 +6,8 @@ const morgan = require("morgan");
 const clusterRoutes = require("./routes/clusterRoutes");
 const driverRoutes = require("./routes/driverRoutes");
 const packageRoutes = require("./routes/packageRoutes");
+const { databaseReset } = require('./db/databaseReset');
+const asyncHandler = require('express-async-handler');
 const { errorHandler } = require('./middleware/errorMiddleware');
 const path = require("path");
 dotenv.config({ path: "./.env.example" });
@@ -25,6 +27,11 @@ app.use(morgan("common"));
 app.use("/api/clusters", clusterRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/packages", packageRoutes);
+
+app.get("/reset-db", asyncHandler(async (req, res) => {
+  databaseReset();
+  res.status(200).json({ "message": "Database reset" })
+}));
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 3000;
