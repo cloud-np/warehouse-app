@@ -29,6 +29,7 @@ hit the endpoints without wasting time in the front-end.
 
 ## How to use
 - Install the dependancies.
+- Clone the project.
 - Start up the docker containers.
 - Open the corrisponding services in the browser.
 ### Dependancies
@@ -41,6 +42,11 @@ You will need to install:
 Please install the latest versions if possible.
 
 ### Start the app 🚀
+
+Clone the project:
+```
+git clone https://github.com/cloud-np/warehouse-app.git
+```
 
 Start Docker containers, networks and creates the needed volumes for the database:
 
