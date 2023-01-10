@@ -35,10 +35,11 @@ class BaseModel {
         if (missingKeys.length > 0){
             throw new Error(`Your model for the table "${tableName}" is missing columns: ${missingKeys}`);
         }
+
         // Dynamically add the properties to the class
         const tableKeys = Object.keys(objColumns);
         tableKeys.forEach(key => {
-            // Skip the id column if it was not provided by the user
+            // Skip the excluded keys
             if (excludedKeys.includes(key))
                 return
             this[key] = objValues[key];

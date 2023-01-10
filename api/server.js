@@ -16,6 +16,8 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+
+/* MIDDLEWARES */
 // For security
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -27,14 +29,11 @@ app.use(morgan("common"));
 app.use("/api/clusters", clusterRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/packages", packageRoutes);
-
 app.get("/reset-db", asyncHandler(async (req, res) => {
   databaseReset();
   res.status(200).json({ "message": "Database reset" })
 }));
 
-/* MONGOOSE SETUP */
-const PORT = process.env.PORT || 3000;
 // For the rest of the unkonwn routes, send the 404.html file
 app.all('*', (req, res) => {
   res.status(404);
@@ -50,6 +49,7 @@ app.all('*', (req, res) => {
 // Error handler at the end of the middleware chain.
 app.use(errorHandler);
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
