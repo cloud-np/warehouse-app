@@ -7,3 +7,5 @@
 .eslintcache
 */.eslintcache
 **/*/.eslintcache
+
+node_modules/

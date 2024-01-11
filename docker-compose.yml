@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 
 services:
   db:
@@ -16,7 +16,7 @@ services:
     networks:
       - db
     restart: unless-stopped
-  # Not really needed for this project, bit I'm leaving it here in case you need to poke around the db
+  # Not really needed for this project, bit I'm leaving it here in case you need to poke around in the db
   db_manager:
     container_name: db_manager
     image: dpage/pgadmin4
