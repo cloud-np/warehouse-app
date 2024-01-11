@@ -9,22 +9,28 @@ const MainTable: React.FC<TableConfig> = ({ title, subTitle, tabs, columns, tabl
     const [searchQuery, setSearchQuery] = useState('');
     const [pageNumber, setPageNumber] = useState(0);
     const [selectedTab, setSelectedTab] = useState('all');
-    const [selectedColumn, setSelectedColumn] = useState(columns[0]);
+    const [selectedColumn, setSelectedColumn] = useState<string>(columns[0].value);
+    const [filterUp, setFilterUp] = useState(true);
     const [openFormForType, setOpenFormForType] = useState(TableType.CEREMONIES);
 
     const handleTabChange = (newValue: string) => {
         setSelectedTab(newValue);
     };
 
+    const handleColumnClick = (column: { label: string, value: string }) => {
+        console.log(column);
+        setSelectedColumn(column.value);
+        setFilterUp(!filterUp);
+    }
 
     const handlePlusClick = () => {
         switch (tableType) {
             case TableType.CEREMONIES:
                 setOpenFormForType(TableType.CEREMONIES);
-            break;
+                break;
             case TableType.PEOPLE:
                 setOpenFormForType(TableType.PEOPLE);
-            break;
+                break;
         }
     };
 
@@ -37,7 +43,7 @@ const MainTable: React.FC<TableConfig> = ({ title, subTitle, tabs, columns, tabl
         return Children.map(children, (child: unknown) => {
             // Only clone the element if it's a valid element
             if (isValidElement(child)) {
-                return React.cloneElement(child, { searchQuery, pageNumber, selectedTab, selectedColumn });
+                return React.cloneElement(child, { searchQuery, pageNumber, selectedTab, selectedColumn, filterUp });
             }
             return child;
         });
@@ -65,7 +71,7 @@ const MainTable: React.FC<TableConfig> = ({ title, subTitle, tabs, columns, tabl
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    <Tabs value={selectedTab}  className="w-full md:w-max">
+                    <Tabs value={selectedTab} className="w-full md:w-max">
                         <TabsHeader>
                             {tabs.map((tab: { label: string, value: string }) => (
                                 <Tab onClick={() => handleTabChange(tab.value)} key={tab.value} value={tab.value}>
@@ -89,7 +95,7 @@ const MainTable: React.FC<TableConfig> = ({ title, subTitle, tabs, columns, tabl
                     <thead>
                         <tr>
                             {columns.map((column: { label: string, value: string }, index: number) => (
-                                <th key={column.value} className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50">
+                                <th onClick={() => handleColumnClick(column)} key={column.value} className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50">
                                     <Typography variant="small" color="blue-gray" className="flex items-center justify-between gap-1 font-normal leading-none opacity-70">
                                         {column.label}{" "}
                                         {index !== columns.length - 1 && (
